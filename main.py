@@ -1,5 +1,13 @@
 applications = []
 
+VALID_STATUSES = [
+    "Saved",
+    "Applied",
+    "Interview",
+    "Rejected",
+    "Offer",
+    "Withdrawn"
+]
 
 
 def add_application(company, position, status):
@@ -33,6 +41,10 @@ def list_applications():
 list_applications()
 
 def update_status(company, new_status):
+    if new_status not in VALID_STATUSES:
+        print("Invalid status.")
+        return
+
     for application in applications:
         if application["company"] == company:
             application["status"] = new_status
@@ -55,7 +67,7 @@ def add_application_from_input():
     company = input("Company: ")
     position = input("Position: ")
     status = input("Status: ")
-    
+
     if status not in VALID_STATUSES:
         print("Invalid status.")
         return
@@ -63,6 +75,19 @@ def add_application_from_input():
     add_application(company, position, status)
 
     print("Application added successfully!")
+
+
+def find_application(company):
+    for application in applications:
+        if application["company"] == company:
+            print (application["position"],application["status"])
+            return
+    print(f"{company} not found")
+
+
+
+
+
 
 def show_menu():
     print()
@@ -74,6 +99,7 @@ def show_menu():
     print("3. Update status")
     print("4. Delete application")
     print("5. Exit")
+    print("6. Find")
 
 while True:
     show_menu()
@@ -86,9 +112,7 @@ while True:
     elif choice == "2":
         list_applications()
 
-    elif choice == "5":
-        print("Goodbye!")
-
+    
     elif choice == "3":
         company = input("Company: ")
         new_status = input("New status: ")
@@ -100,13 +124,16 @@ while True:
         company = input("Company: ")
 
         delete_application(company)
-        break
 
-VALID_STATUSES = [
-    "Saved",
-    "Applied",
-    "Interview",
-    "Rejected",
-    "Offer",
-    "Withdrawn"
-]
+    elif choice == "6":
+        company = input("Company: ")
+
+        find_application(company)
+        
+    elif choice == "5":
+        print("Goodbye!")
+
+        break
+    else:
+        print("Invalid option.")
+
