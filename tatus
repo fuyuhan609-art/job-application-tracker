@@ -1,0 +1,143 @@
+[1mdiff --git a/main.py b/main.py[m
+[1mindex d70b703..960ce7b 100644[m
+[1m--- a/main.py[m
+[1m+++ b/main.py[m
+[36m@@ -1,66 +1,21 @@[m
+[31m-applications = [][m
+[31m-[m
+[31m-VALID_STATUSES = [[m
+[31m-    "Saved",[m
+[31m-    "Applied",[m
+[31m-    "Interview",[m
+[31m-    "Rejected",[m
+[31m-    "Offer",[m
+[31m-    "Withdrawn"[m
+[31m-][m
+[31m-[m
+[31m-[m
+[31m-def add_application(company, position, status):[m
+[31m-    application = {[m
+[31m-        "company": company,[m
+[31m-        "position": position,[m
+[31m-        "status": status[m
+[31m-    }[m
+[31m-    applications.append(application)[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-#company = input("Company: ")[m
+[31m-[m
+[31m-#position = input("Position: ")[m
+[31m-#status = input("Status: ")[m
+[32m+[m[32mfrom storage import save_applications, load_applications[m
+[32m+[m[32mfrom application_manager import ([m
+[32m+[m[32m    VALID_STATUSES,[m
+[32m+[m[32m    add_application,[m
+[32m+[m[32m    list_applications,[m
+[32m+[m[32m    update_status,[m
+[32m+[m[32m    delete_application,[m
+[32m+[m[32m    find_application[m
+[32m+[m[32m)[m
+ [m
+[32m+[m[32mapplications = [][m
+ [m
+[31m-for application in applications:[m
+[31m-    print(application)[m
+[31m-[m
+[31m-def list_applications():[m
+[31m-    for application in applications:[m
+[31m-        print([m
+[31m-            application["company"],[m
+[31m-            "-",[m
+[31m-            application["position"],[m
+[31m-            "-",[m
+[31m-            application["status"][m
+[31m-        )[m
+[31m-list_applications()[m
+ [m
+[31m-def update_status(company, new_status):[m
+[31m-    if new_status not in VALID_STATUSES:[m
+[31m-        print("Invalid status.")[m
+[31m-        return[m
+ [m
+[31m-    for application in applications:[m
+[31m-        if application["company"] == company:[m
+[31m-            application["status"] = new_status[m
+[31m-            print(f"{company} status updated to {new_status}")[m
+[31m-            return[m
+[32m+[m[32m#for application in applications:[m
+[32m+[m[32m    #print(application)[m
+ [m
+[31m-    print(f"{company} not found")[m
+ [m
+[31m-def delete_application(company):[m
+[31m-    for application in applications:[m
+[31m-        if application["company"] == company:[m
+[31m-            applications.remove(application)[m
+[31m-            print(f"{company} application deleted")[m
+[31m-            return[m
+[31m-[m
+[31m-    print(f"{company} not found")[m
+ [m
+ [m
+ def add_application_from_input():[m
+[36m@@ -72,22 +27,15 @@[m [mdef add_application_from_input():[m
+         print("Invalid status.")[m
+         return[m
+ [m
+[31m-    add_application(company, position, status)[m
+[32m+[m[32m    add_application(applications,company, position, status)[m
+ [m
+     print("Application added successfully!")[m
+ [m
+ [m
+[31m-def find_application(company):[m
+[31m-    for application in applications:[m
+[31m-        if application["company"] == company:[m
+[31m-            print (application["position"],application["status"])[m
+[31m-            return[m
+[31m-    print(f"{company} not found")[m
+[31m-[m
+[31m-[m
+ [m
+ [m
+ [m
+[32m+[m[32mapplications = load_applications()[m
+ [m
+ def show_menu():[m
+     print()[m
+[36m@@ -108,9 +56,10 @@[m [mwhile True:[m
+ [m
+     if choice == "1":[m
+         add_application_from_input()[m
+[32m+[m[32m        save_applications(applications)[m
+ [m
+     elif choice == "2":[m
+[31m-        list_applications()[m
+[32m+[m[32m        list_applications(applications)[m
+ [m
+     [m
+     elif choice == "3":[m
+[36m@@ -118,17 +67,19 @@[m [mwhile True:[m
+         new_status = input("New status: ")[m
+ [m
+ [m
+[31m-        update_status(company, new_status)[m
+[32m+[m[32m        update_status(applications, company, new_status)[m
+[32m+[m[32m        save_applications(applications)[m
+ [m
+     elif choice == "4":[m
+         company = input("Company: ")[m
+ [m
+[31m-        delete_application(company)[m
+[32m+[m[32m        delete_application(applications, company)[m
+[32m+[m[32m        save_applications(applications)[m
+ [m
+     elif choice == "6":[m
+         company = input("Company: ")[m
+ [m
+[31m-        find_application(company)[m
+[32m+[m[32m        find_application(applications, company)[m
+         [m
+     elif choice == "5":[m
+         print("Goodbye!")[m

@@ -1,66 +1,21 @@
+from storage import save_applications, load_applications
+from application_manager import (
+    VALID_STATUSES,
+    add_application,
+    list_applications,
+    update_status,
+    delete_application,
+    find_application
+)
+
 applications = []
 
-VALID_STATUSES = [
-    "Saved",
-    "Applied",
-    "Interview",
-    "Rejected",
-    "Offer",
-    "Withdrawn"
-]
 
 
-def add_application(company, position, status):
-    application = {
-        "company": company,
-        "position": position,
-        "status": status
-    }
-    applications.append(application)
+#for application in applications:
+    #print(application)
 
 
-
-#company = input("Company: ")
-
-#position = input("Position: ")
-#status = input("Status: ")
-
-
-for application in applications:
-    print(application)
-
-def list_applications():
-    for application in applications:
-        print(
-            application["company"],
-            "-",
-            application["position"],
-            "-",
-            application["status"]
-        )
-list_applications()
-
-def update_status(company, new_status):
-    if new_status not in VALID_STATUSES:
-        print("Invalid status.")
-        return
-
-    for application in applications:
-        if application["company"] == company:
-            application["status"] = new_status
-            print(f"{company} status updated to {new_status}")
-            return
-
-    print(f"{company} not found")
-
-def delete_application(company):
-    for application in applications:
-        if application["company"] == company:
-            applications.remove(application)
-            print(f"{company} application deleted")
-            return
-
-    print(f"{company} not found")
 
 
 def add_application_from_input():
@@ -72,22 +27,15 @@ def add_application_from_input():
         print("Invalid status.")
         return
 
-    add_application(company, position, status)
+    add_application(applications,company, position, status)
 
     print("Application added successfully!")
 
 
-def find_application(company):
-    for application in applications:
-        if application["company"] == company:
-            print (application["position"],application["status"])
-            return
-    print(f"{company} not found")
 
 
 
-
-
+applications = load_applications()
 
 def show_menu():
     print()
@@ -108,9 +56,10 @@ while True:
 
     if choice == "1":
         add_application_from_input()
+        save_applications(applications)
 
     elif choice == "2":
-        list_applications()
+        list_applications(applications)
 
     
     elif choice == "3":
@@ -118,17 +67,19 @@ while True:
         new_status = input("New status: ")
 
 
-        update_status(company, new_status)
+        update_status(applications, company, new_status)
+        save_applications(applications)
 
     elif choice == "4":
         company = input("Company: ")
 
-        delete_application(company)
+        delete_application(applications, company)
+        save_applications(applications)
 
     elif choice == "6":
         company = input("Company: ")
 
-        find_application(company)
+        find_application(applications, company)
         
     elif choice == "5":
         print("Goodbye!")
