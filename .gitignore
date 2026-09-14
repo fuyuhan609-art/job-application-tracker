@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 applications.json
 applications.db
+.pytest_cache/
+.venv/
+venv/
+.env
