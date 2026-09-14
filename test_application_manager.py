@@ -1,82 +1,91 @@
-from application_manager import (
-    add_application,
-    update_status,
-    delete_application,
-    find_application
+import pytest
+
+from database import (
+    create_table,
+    add_application as db_add_application,
+    list_applications as db_list_applications,
+    update_status as db_update_status,
+    delete_application as db_delete_application,
+    find_application as db_find_application
 )
 
-def test_add_application():
-    applications = []
 
-    add_application(
-        applications,
-        "Google",
+@pytest.fixture
+def setup_database():
+    create_table()
+
+    # 清空测试数据
+    import sqlite3
+
+    connection = sqlite3.connect("applications.db")
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM applications")
+
+    connection.commit()
+    connection.close()
+
+
+def test_add_application(setup_database):
+    db_add_application(
+        "Tesla",
         "Software Engineer",
         "Applied"
     )
+
+    applications = db_list_applications()
 
     assert len(applications) == 1
+    assert applications[0][1] == "Tesla"
+    assert applications[0][2] == "Software Engineer"
+    assert applications[0][3] == "Applied"
 
 
-def test_update_status():
-    applications = []
+def test_find_application(setup_database):
+    db_add_application(
+        "Apple",
+        "Backend Developer",
+        "Saved"
+    )
 
-    add_application(
-        applications,
+    applications = db_list_applications()
+    application_id = applications[0][0]
+
+    result = db_find_application(application_id)
+
+    assert result is not None
+    assert result[1] == "Apple"
+
+
+def test_update_status(setup_database):
+    db_add_application(
         "Google",
+        "Python Developer",
+        "Saved"
+    )
+
+    applications = db_list_applications()
+    application_id = applications[0][0]
+
+    db_update_status(application_id, "Interview")
+
+    result = db_find_application(application_id)
+
+    assert result[3] == "Interview"
+
+
+def test_delete_application(setup_database):
+    db_add_application(
+        "Microsoft",
         "Software Engineer",
         "Applied"
     )
 
-    update_status(
-        applications,
-        "Google",
-        "Interview"
-    )
+    applications = db_list_applications()
+    application_id = applications[0][0]
 
-    assert applications[0]["status"] == "Interview"
+    db_delete_application(application_id)
 
-def test_delete_application():
-    applications = []
-
-    add_application(
-        applications,
-        "Google",
-        "Software Engineer",
-        "Applied"
-    )
-
-    delete_application(
-        applications,
-        "Google"
-    )
-
-    assert len(applications) == 0
-
-def test_find_application():
-    applications = []
-
-    add_application(
-        applications,
-        "Google",
-        "Software Engineer",
-        "Applied"
-    )
-
-    result = find_application(
-        applications,
-        "Google"
-    )
-
-    assert result["company"] == "Google"
-
- 
-def test_find_application_not_found():
-    applications = []
-
-    result = find_application(
-        applications,
-        "Google"
-    )
+    result = db_find_application(application_id)
 
     assert result is None

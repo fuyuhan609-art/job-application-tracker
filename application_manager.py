@@ -6,52 +6,39 @@ VALID_STATUSES = [
     "Offer",
     "Withdrawn"
 ]
+from database import (
+    add_application as db_add_application,
+    list_applications as db_list_applications,
+    update_status as db_update_status,
+    delete_application as db_delete_application,
+    find_application as db_find_application
+)
 
-def add_application(applications, company, position, status):
-    application = {
-        "company": company,
-        "position": position,
-        "status": status
-    }
-    applications.append(application)
+def add_application(company, position, status):
+    if status not in VALID_STATUSES:
+        print("Invalid status.")
+        return
+    db_add_application(company, position, status)
 
-def list_applications(applications):
-    for application in applications:
-        print(
-            application["company"],
-            "-",
-            application["position"],
-            "-",
-            application["status"]
-        )
+
+def list_applications():
+    return db_list_applications()
    
 
-def update_status(applications,company, new_status):
+def update_status(application_id, new_status):
     if new_status not in VALID_STATUSES:
         print("Invalid status.")
         return
 
-    for application in applications:
-        if application["company"] == company:
-            application["status"] = new_status
-            print(f"{company} status updated to {new_status}")
-            return
+    db_update_status(application_id, new_status)
 
-    print(f"{company} not found")
+def delete_application(application_id):
+    deleted_count = db_delete_application(application_id)
 
-def delete_application(applications,company):
-    for application in applications:
-        if application["company"] == company:
-            applications.remove(application)
-            print(f"{company} application deleted")
-            return
+    if deleted_count == 0:
+        print("Application not found.")
+    else:
+        print("Application deleted successfully.")
 
-    print(f"{company} not found")
-
-def find_application(applications,company):
-    for application in applications:
-        if application["company"].lower() == company.lower():
-            print (application["position"],application["status"])
-            return application
-        return None
-    print(f"{company} not found")
+def find_application(application_id):
+    return db_find_application(application_id)
