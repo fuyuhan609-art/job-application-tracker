@@ -1,9 +1,11 @@
+import os
 import sqlite3
+
+DB_NAME = os.getenv("DB_NAME", "applications.db")
 
 
 def get_connection():
-    return sqlite3.connect("applications.db")
-
+    return sqlite3.connect(DB_NAME)
 
 def create_table():
     connection = get_connection()
@@ -32,8 +34,12 @@ def add_application(company, position, status):
     """, (company, position, status))
 
     connection.commit()
+
+    application_id = cursor.lastrowid
+
     connection.close()
 
+    return application_id
 
 def list_applications():
     connection = get_connection()

@@ -1,9 +1,9 @@
 __pycache__/
 *.pyc
-applications.json
+.pytest_cache/
 applications.db
 test_applications.db
-.pytest_cache/
+.git/
 .venv/
 venv/
 .env

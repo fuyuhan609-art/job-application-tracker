@@ -9,11 +9,42 @@ from database import (
     find_application as db_find_application
 )
 
+import os
+import pytest
+
+os.environ["DB_NAME"] = "test_applications.db"
+
 
 @pytest.fixture
 def setup_database():
+    from database import get_connection, create_table
+
     create_table()
 
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM applications")
+
+    connection.commit()
+    connection.close()
+
+
+
+@pytest.fixture
+def setup_database():
+    from database import get_connection, create_table
+
+    create_table()
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM applications")
+
+    connection.commit()
+    connection.close()
+    
     # 清空测试数据
     import sqlite3
 
