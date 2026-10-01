@@ -1,3 +1,6 @@
+import swagger_ui
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
@@ -12,7 +15,22 @@ from database import (
     update_status as db_update_status,
     delete_application as db_delete_application
 )
-app = FastAPI()
+app = FastAPI(docs_url=None)
+app.mount(
+    "/swagger-static",
+    StaticFiles(directory=str(swagger_ui.__path__[0] + "/static")),
+    name="swagger-static",
+)
+
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui():
+    return get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=f"{app.title} - Swagger UI",
+        swagger_js_url="/swagger-static/swagger-ui-bundle.js",
+        swagger_css_url="/swagger-static/swagger-ui.css",
+    )
 
 
 class Application(BaseModel):
